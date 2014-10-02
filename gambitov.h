@@ -1,13 +1,22 @@
+#include <string>
+#include <vector>
+
+using namespace std;
+
 class Gambitov {
 
   public:
     Gambitov();
     ~Gambitov();
 
-    void think();
+    int think();
+
+    vector<int> getAllMoves();
+    void loadBoardState(string pos);
 
   private:
     int testVariable;
+    string position;
 
     void privateTestMethod();
 
