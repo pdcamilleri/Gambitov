@@ -22,7 +22,7 @@ GTEST_HEADERS = $(GTEST_DIR)/include/gtest/*.h \
 # trailing _.
 GTEST_SRCS_ = $(GTEST_DIR)/src/*.cc $(GTEST_DIR)/src/*.h $(GTEST_HEADERS)
 
-default: clean test
+default: test
 
 # For simplicity and to avoid depending on Google Test's
 # implementation details, the dependencies specified below are
@@ -46,6 +46,14 @@ gtest_main.a : gtest-all.o gtest_main.o
 gambitov.o : $(USER_DIR)/gambitov.cpp $(USER_DIR)/gambitov.h $(GTEST_HEADERS)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(USER_DIR)/gambitov.cpp
 
+board.o : $(USER_DIR)/board.cpp $(USER_DIR)/board.h $(GTEST_HEADERS)
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(USER_DIR)/board.cpp
+
+utils.o : $(USER_DIR)/utils.cpp $(USER_DIR)/utils.h $(GTEST_HEADERS)
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(USER_DIR)/utils.cpp
+
+
+
 testPieceMovement.o : $(USER_DIR)/testPieceMovement.cpp \
                      $(USER_DIR)/gambitov.h $(GTEST_HEADERS)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(USER_DIR)/testPieceMovement.cpp
@@ -53,6 +61,11 @@ testPieceMovement.o : $(USER_DIR)/testPieceMovement.cpp \
 testCheckmate.o : $(USER_DIR)/testCheckmate.cpp \
                      $(USER_DIR)/gambitov.h $(GTEST_HEADERS)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(USER_DIR)/testCheckmate.cpp
+
+testBoard.o : $(USER_DIR)/testBoard.cpp \
+                     $(USER_DIR)/gambitov.h $(GTEST_HEADERS)
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(USER_DIR)/testBoard.cpp
+
 
 
 
@@ -62,9 +75,13 @@ testPieceMovement: gambitov.o testPieceMovement.o gtest_main.a
 testCheckmate: gambitov.o testCheckmate.o gtest_main.a
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -lpthread $^ -o $@
 
-test: testCheckmate testPieceMovement
-	./testCheckmate
-	./testPieceMovement
+testBoard: board.o testBoard.o utils.o gtest_main.a
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -lpthread $^ -o $@
+
+
+
+test: testCheckmate testPieceMovement testBoard
+	./testBoard
 
 
 
